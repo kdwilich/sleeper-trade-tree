@@ -5,8 +5,6 @@
 	export let details;
   export let rosters;
 
-	console.log(details)
-
 	let {
 		type,
 		metadata,
@@ -28,7 +26,6 @@
 
 	if (draft_picks) {
 		draft_picks = draft_picks.map(pick => translateDraftPick(pick));
-		console.log(draft_picks)
 	}
 </script>
 

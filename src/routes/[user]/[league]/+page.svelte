@@ -1,31 +1,54 @@
 <script>
-	import { page } from '$app/stores';
+	import PlayerList from "$lib/components/PlayerList.svelte";
+  import Transaction from '$lib/components/Transactions.svelte';
+  import { page } from "$app/stores";
 
-  let query = 'jeff wilson'
-  let players = []
-  let timeout
+  export let data;
+  let rosters = data.rosters;
+  let player;
+  let transactions = [];
+  let loading = false;
 
-  async function handleInput() {
-		if (timeout) clearTimeout(timeout)
-		timeout = setTimeout(searchPlayers, 300)
-  }
+  $: onChange(player);
 
-  async function searchPlayers() {
-    if (query) {
-      const res = await fetch(`/api/players?query=${query}`)
-      players = await res.json();
+  async function onChange(player) {
+    if (player) {
+      loading = true;
+      const res = await fetch(`/api/transactions?player_id=${player.player_id}&league_id=${$page.params.league}`)
+      const data = await res.json();
+      transactions = data?.transactions.reverse();
+      loading = false;
     }
   }
-
 </script>
 
-<h1>Player</h1>
-
-<input bind:value={query} on:input={handleInput}>
-<button on:click={handleInput}>Go</button>
-
-<ul>
-  {#each players as player}
-    <li><a href={`${$page.url.pathname}/${player.player_id}`}>{player.full_name}</a></li>
-  {/each}
-</ul>
+<div>
+  <h1>Player</h1>
+  <PlayerList bind:selectedPlayer={player} />
+</div>
+<div>
+  {#if player}
+    <h1>Transactions</h1>
+    <h3>{player.full_name}</h3>
+    {#if loading}
+      <div>Loading...</div>
+    {:else} 
+      {#if transactions.length > 0}
+        <div class="transaction-container">
+          {#each transactions as transaction}
+            <Transaction rosters={rosters} details={transaction} />
+          {/each}
+        </div>
+      {:else}
+        <div>No transactions for this player</div>
+      {/if}
+    {/if}
+  {/if}
+</div>
+  
+<style>
+  .transaction-container {
+    display: flex;
+    overflow-x: auto;
+  }
+</style>

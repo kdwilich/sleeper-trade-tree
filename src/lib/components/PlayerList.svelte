@@ -1,9 +1,8 @@
 <script>
-	import { page } from '$app/stores';
-
-  let query = 'patrick mahomes'
+  let query = 'jeff wilson'
   let players = []
   let timeout
+  export let selectedPlayer;
 
   async function handleInput() {
 		if (timeout) clearTimeout(timeout)
@@ -19,13 +18,13 @@
 
 </script>
 
-<h1>Player</h1>
-
 <input bind:value={query} on:input={handleInput}>
 <button on:click={handleInput}>Go</button>
 
 <ul>
   {#each players as player}
-    <li>{player.full_name}</li>
+    <!-- svelte-ignore a11y-click-events-have-key-events -->
+    <!-- svelte-ignore a11y-no-noninteractive-element-interactions -->
+    <li on:click={() => selectedPlayer = player}>{player.full_name}</li>
   {/each}
 </ul>

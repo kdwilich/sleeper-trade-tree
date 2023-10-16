@@ -1,7 +1,7 @@
 <script>
   import { goto } from '$app/navigation';
 
-  export let user = 'bonetown';
+  export let user = '';
 
   const handleClick = () => {
     if (user) {
@@ -13,7 +13,7 @@
 
 </script>
 
-<h1>Hello and welcome to my site!</h1>
+<h1>Sleeper player transaction history</h1>
 
 <form on:submit|preventDefault={handleClick}>
 
